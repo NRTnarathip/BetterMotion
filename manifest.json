@@ -1,0 +1,9 @@
+﻿{
+  "Name": "Better Motion",
+  "Author": "NRTnarathip",
+  "Version": "1.0.0",
+  "Description": "One or two sentences about the mod.",
+  "UniqueID": "NRTnarathip.BetterMotion",
+  "EntryDll": "BetterMotion.dll",
+  "UpdateKeys": []
+}
