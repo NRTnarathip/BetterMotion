@@ -1,18 +1,25 @@
 ﻿using HarmonyLib;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.TerrainFeatures;
 namespace BetterMotion;
 
 public sealed class ModEntry : Mod
 {
-    GrassMotionManager grassMotionManager;
+    public static Harmony HarmonyObj { get; private set; }
+    List<IMotionManager> _motionManagers = new();
+
     public override void Entry(IModHelper helper)
     {
         Helper.Events.Display.RenderedWorld += Display_RenderedWorld;
         Helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked;
-        var h = new Harmony(this.ModManifest.UniqueID);
-        h.PatchAll();
-        grassMotionManager = new(h);
+
+        HarmonyObj = new Harmony(this.ModManifest.UniqueID);
+        HarmonyObj.PatchAll();
+
+        _motionManagers.Add(new GrassMotionManager(typeof(Grass)));
+        _motionManagers.Add(new TreeMotionManager(typeof(Tree)));
+        _motionManagers.Add(new BushMotionManager(typeof(Bush)));
     }
 
     private void GameLoop_UpdateTicked(object? sender, StardewModdingAPI.Events.UpdateTickedEventArgs e)
@@ -25,7 +32,10 @@ public sealed class ModEntry : Mod
         if (map == null)
             return;
         //delayShake = 5.0;
-        grassMotionManager.Ticked(e);
+        foreach (var motionManager in _motionManagers)
+        {
+            motionManager.Ticked(e);
+        }
     }
 
     private void Display_RenderedWorld(object? sender, StardewModdingAPI.Events.RenderedWorldEventArgs e)

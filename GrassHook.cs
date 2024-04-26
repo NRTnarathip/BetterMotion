@@ -12,10 +12,11 @@ static class GrassHook
 {
     static BindingFlags PrivateStaticFlag = BindingFlags.NonPublic | BindingFlags.Static;
     static BindingFlags PrivateObjFlag = BindingFlags.NonPublic | BindingFlags.Instance;
-    public static void Init(Harmony h)
+    public static void Init()
     {
         var drawMethod = typeof(Grass).GetMethod(nameof(Grass.draw));
         var prefixMethod = typeof(GrassHook).GetMethod(nameof(Draw), PrivateStaticFlag);
+        var h = ModEntry.HarmonyObj;
         h.Patch(drawMethod, prefix: new(prefixMethod));
     }
     static FieldInfo whichWeedField = typeof(Grass).GetField("whichWeed", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -42,7 +43,7 @@ static class GrassHook
         double[] shakeRandom = shakeRandomField.GetValue(__instance) as double[];
 
         float shakeRotation = (float)shakeRotation_Field.GetValue(__instance);
-        var objMotion = GrassMotionManager.Instance.GrassMap[tileLocation];
+        var objMotion = GrassMotionManager.Instance.ObjectMotionContainer[tileLocation];
         shakeRotation += objMotion.motion;
 
         for (int i = 0; i < numberOfWeeds; i++)
