@@ -39,8 +39,11 @@ static class GrassHook
         int[] offset4 = offset4Field.GetValue(__instance) as int[];
         bool[] flip = flip_Field.GetValue(__instance) as bool[];
         var texture = __instance.texture;
-        float shakeRotation = (float)shakeRotation_Field.GetValue(__instance);
         double[] shakeRandom = shakeRandomField.GetValue(__instance) as double[];
+
+        float shakeRotation = (float)shakeRotation_Field.GetValue(__instance);
+        var objMotion = GrassMotionManager.Instance.GrassMap[tileLocation];
+        shakeRotation += objMotion.motion;
 
         for (int i = 0; i < numberOfWeeds; i++)
         {
